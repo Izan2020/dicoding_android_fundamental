@@ -38,9 +38,9 @@ fun SplashScreen(
 ) {
     LaunchedEffect(true) {
         delay(2500)
-        AppRouter().pushAndReplace(navController = navController, Screen.homeScreen.route)
+        AppRouter.pushAndReplace(navController = navController, Screen.HomeScreen.route)
     }
-    return Scaffold() {
+    return Scaffold {
         Column(
             modifier = Modifier
                 .padding(it)

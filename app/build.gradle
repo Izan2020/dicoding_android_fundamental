@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.dagger.hilt.android'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -10,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.glantrox.dicoding_android_fundamental"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -18,6 +20,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
     }
 
     buildTypes {
@@ -44,14 +47,17 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
 }
+
+
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
@@ -84,8 +90,8 @@ dependencies {
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    implementation "com.google.accompanist:accompanist-pager:0.13.0"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
+    implementation "com.google.accompanist:accompanist-pager:0.28.0"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.28.0"
 
     // GSON Code Generation
     implementation 'com.google.code.gson:gson:2.9.0'
@@ -102,4 +108,26 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
 
+    // Room Compiler
+    implementation "androidx.room:room-runtime:2.5.2"
+    implementation "androidx.room:room-ktx:2.5.2"
+    kapt "androidx.room:room-compiler:2.5.2"
+
+    // DI
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation("androidx.hilt:hilt-navigation:1.0.0")
+
+
+
+    // Save Preferences
+    implementation 'com.chibatching.kotpref:kotpref:2.13.1'
+
+    kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
+
+}
+
+hilt {
+    enableAggregatingTask = true
 }

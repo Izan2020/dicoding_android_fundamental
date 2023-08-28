@@ -22,7 +22,7 @@ fun FollowingPage(
         ServiceState.Error -> WarningMessage(WarningMessages.ERROR) {
             callbackRefresh()
         }
-        ServiceState.Success -> LazyColumn() {
+        ServiceState.Success -> LazyColumn {
             items(user) { user ->
                 ItemUser(user = user, onTap = {
                     callback(user.login)

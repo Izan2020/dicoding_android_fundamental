@@ -11,8 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,8 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.glantrox.dicoding_android_fundamental.R
@@ -50,8 +59,8 @@ import com.glantrox.dicoding_android_fundamental.ui.widget.WarningMessages
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = HomeViewModel(),
-    detailViewModel: DetailViewModel = DetailViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    detailViewModel: DetailViewModel = hiltViewModel(),
     navHostController: NavHostController = rememberNavController()
 ) {
     var searchQuery by remember { mutableStateOf("")}
@@ -60,9 +69,35 @@ fun HomeScreen(
         homeViewModel.getListOfUsers("")
     }
 
-    val listOfUsers = homeViewModel.listOfUser.value
+    val listOfUsers by homeViewModel.listOfUser
 
-    return Scaffold() {
+    return Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+               Text("Github.",
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp)) },
+                actions = {
+                    IconButton(onClick = {
+                        AppRouter.push(navHostController, Screen.SettingsScreen.route)
+                    }) {
+                        Icon(imageVector = Icons.Rounded.Settings , contentDescription = "")
+                    }
+                }
+                 )
+        },
+        floatingActionButton = {
+            ElevatedButton(
+                   colors = ButtonDefaults.buttonColors(Color.DarkGray),
+                onClick = {
+                    AppRouter.push(navHostController, Screen.FavouriteScreen.route)
+                }) {
+                Icon(imageVector = Icons.Rounded.Star, contentDescription = "")
+            }
+        }
+    ) {
         Column(
             modifier = Modifier.padding(it),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -76,8 +111,8 @@ fun HomeScreen(
                     colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
                 ) {
                     TextField(
-                        value = searchQuery, onValueChange = {
-                            searchQuery = it
+                        value = searchQuery, onValueChange = { query ->
+                            searchQuery = query
                         },
                         leadingIcon = {
                             if (homeViewModel.eventState.value == HomeEvent.OnSearch || searchQuery != "") {
@@ -95,7 +130,7 @@ fun HomeScreen(
                         },
                         trailingIcon = {
                             IconButton(onClick = {
-                                if (searchQuery == "") return@IconButton
+
                                 homeViewModel.setHomeEvent(HomeEvent.OnSearch)
                                 homeViewModel.getListOfUsers(searchQuery)
                             }) {
@@ -120,14 +155,15 @@ fun HomeScreen(
             when(homeViewModel.listOfUserState.value) {
                 Empty -> WarningMessage(WarningMessages.EMPTY)
                 Loading -> WarningMessage(WarningMessages.LOADING)
-                Error -> WarningMessage(WarningMessages.ERROR) {
+                Error -> WarningMessage(WarningMessages.ERROR,
+                    errorCode = homeViewModel.currentMessage.value) {
                     homeViewModel.getListOfUsers()
                 }
-                Success -> LazyColumn() {
+                Success -> LazyColumn {
                     items(listOfUsers) { user ->
-                        ItemUser(user = user, onTap = {
-                            detailViewModel.getCurrentUserDetail(it)
-                            AppRouter().push(navHostController, Screen.detailScreen.route)
+                        ItemUser(user = user, onTap = { loginId ->
+                            detailViewModel.getCurrentUserDetail(loginId)
+                            AppRouter.push(navHostController, Screen.DetailScreen.route)
                         })
                     }
                 }
