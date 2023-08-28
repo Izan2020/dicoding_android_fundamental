@@ -28,9 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,13 +61,12 @@ fun HomeScreen(
     detailViewModel: DetailViewModel = hiltViewModel(),
     navHostController: NavHostController = rememberNavController()
 ) {
-    var searchQuery by remember { mutableStateOf("")}
 
 
     LaunchedEffect(true) {
-        homeViewModel.getListOfUsers("")
+        homeViewModel.getListOfUsers()
     }
-
+    var searchQuery = homeViewModel.searchQuery.value
     val listOfUsers by homeViewModel.listOfUser
 
     return Scaffold(
@@ -112,7 +109,7 @@ fun HomeScreen(
                     colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
                 ) {
                     TextField(
-                        value = searchQuery, onValueChange = { query ->
+                        value =  searchQuery, onValueChange = { query ->
                             searchQuery = query
                         },
                         leadingIcon = {
@@ -120,7 +117,7 @@ fun HomeScreen(
                                 IconButton(onClick = {
                                     homeViewModel.setHomeEvent(HomeEvent.OnDefault)
                                     searchQuery = ""
-                                    homeViewModel.getListOfUsers("")
+                                    homeViewModel.getListOfUsers()
                                 }) {
                                     Icon(
                                         imageVector = Icons.Rounded.Close,
@@ -133,7 +130,7 @@ fun HomeScreen(
                             IconButton(onClick = {
 
                                 homeViewModel.setHomeEvent(HomeEvent.OnSearch)
-                                homeViewModel.getListOfUsers(searchQuery)
+                                homeViewModel.getListOfUsers()
                             }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.baseline_search_24),
