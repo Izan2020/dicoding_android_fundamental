@@ -25,9 +25,6 @@ class HomeViewModel @Inject  constructor(
     private val apiInterface: ApiInterface
 ) : ViewModel() {
 
-    // Search Query
-    private val _searchQuery = mutableStateOf("")
-    val searchQuery: State<String> = _searchQuery
 
     // Event State
     private val _eventState = mutableStateOf(HomeEvent.OnDefault)
@@ -47,15 +44,15 @@ class HomeViewModel @Inject  constructor(
     val currentMessage: State<String> = _currentMessage
 
 
-    fun getListOfUsers() {
+    fun getListOfUsers(value: String = "") {
         when (_eventState.value) {
             HomeEvent.OnSearch -> {
                 viewModelScope.launch {
-                    if (_searchQuery.value == "") return@launch
+                    if (value == "") return@launch
                     try {
                         setCurrentListOfUserState(ServiceState.Loading)
                         delay(1200)
-                        val response = apiInterface.searchUserByUsername(_searchQuery.value)
+                        val response = apiInterface.searchUserByUsername(value)
                         _listOfUser.value = response.items
                         setCurrentListOfUserState(ServiceState.Success)
                     } catch (e: Exception) {
