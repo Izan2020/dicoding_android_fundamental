@@ -35,7 +35,7 @@ object AppModule {
         val authInterceptor = Interceptor { chain ->
             val req  = chain.request()
             val requestHeaders = req.newBuilder()
-                .addHeader("Authorization", "token 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")
+                .addHeader("Authorization", "token {Token Saya Lampirkan di Notes}")
                 .build()
             chain.proceed(requestHeaders)
         }
