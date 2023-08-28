@@ -65,16 +65,18 @@ fun FavouriteScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        favouriteViewModel.deleteAllFavourite()
-                        Toast.makeText(
-                            context,
-                            "All Saved Favorites Deleted!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }) {
-                        Icon(imageVector = Icons.Rounded.Delete, contentDescription = "")
-                    }
+                  if(listOfFavouritesState == ServiceState.Success) {
+                      IconButton(onClick = {
+                          favouriteViewModel.deleteAllFavourite()
+                          Toast.makeText(
+                              context,
+                              "All Saved Favorites Deleted!",
+                              Toast.LENGTH_SHORT
+                          ).show()
+                      }) {
+                          Icon(imageVector = Icons.Rounded.Delete, contentDescription = "")
+                      }
+                  }
                 }
             )
         }

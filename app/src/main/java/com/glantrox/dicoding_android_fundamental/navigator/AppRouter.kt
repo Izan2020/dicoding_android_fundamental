@@ -8,11 +8,13 @@ import androidx.navigation.compose.rememberNavController
 import com.glantrox.dicoding_android_fundamental.core.viewmodel.DetailViewModel
 import com.glantrox.dicoding_android_fundamental.core.viewmodel.FavouriteViewModel
 import com.glantrox.dicoding_android_fundamental.core.viewmodel.HomeViewModel
+import com.glantrox.dicoding_android_fundamental.core.viewmodel.PreferenceViewModel
 import com.glantrox.dicoding_android_fundamental.ui.screen.DetailScreen
 import com.glantrox.dicoding_android_fundamental.ui.screen.FavouriteScreen
 import com.glantrox.dicoding_android_fundamental.ui.screen.HomeScreen
 import com.glantrox.dicoding_android_fundamental.ui.screen.SettingsScreen
 import com.glantrox.dicoding_android_fundamental.ui.screen.SplashScreen
+
 
 sealed class Screen(val route: String) {
     object HomeScreen : Screen("i<3dIcoDiNg!!!!h0m3sCr33n!?#?!i<3dIcoDiNg!!!!#akubutuhbintang5")
@@ -28,8 +30,10 @@ class AppRouter {
     fun RouterDelegate(
         detailViewModel: DetailViewModel,
         homeViewModel: HomeViewModel,
-        favouriteViewModel: FavouriteViewModel
+        favouriteViewModel: FavouriteViewModel,
+        preferenceViewModel: PreferenceViewModel
     ) {
+
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = Screen.SplashScreen.route) {
             composable(Screen.SplashScreen.route) {
@@ -56,7 +60,7 @@ class AppRouter {
                     )
             }
             composable(Screen.SettingsScreen.route) {
-                SettingsScreen()
+                SettingsScreen(navController, preferenceViewModel)
             }
 
         }

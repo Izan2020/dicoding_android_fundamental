@@ -8,13 +8,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@InstallIn
+@InstallIn(SingletonComponent::class)
 @Module
 object AppModule {
 
@@ -23,7 +24,9 @@ object AppModule {
     fun providesLocalDatabase(
         @ApplicationContext context: Context
     ): FavouriteDatabase {
-        return Room.databaseBuilder(context, FavouriteDatabase::class.java, "favourite.db").build()
+        return Room.databaseBuilder(context, FavouriteDatabase::class.java, "favourite.db")
+            .allowMainThreadQueries()
+            .build()
     }
 
     @Provides
@@ -32,7 +35,7 @@ object AppModule {
         val authInterceptor = Interceptor { chain ->
             val req  = chain.request()
             val requestHeaders = req.newBuilder()
-                .addHeader("Authorization", "token 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")
+                .addHeader("Authorization", "token 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")
                 .build()
             chain.proceed(requestHeaders)
         }
@@ -49,5 +52,6 @@ object AppModule {
 
         return retrofit.create(ApiInterface::class.java)
     }
+
 
 }

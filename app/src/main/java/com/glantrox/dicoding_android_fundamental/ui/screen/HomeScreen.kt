@@ -65,6 +65,7 @@ fun HomeScreen(
 ) {
     var searchQuery by remember { mutableStateOf("")}
 
+
     LaunchedEffect(true) {
         homeViewModel.getListOfUsers("")
     }

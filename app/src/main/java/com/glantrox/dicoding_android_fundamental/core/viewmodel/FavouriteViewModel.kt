@@ -1,5 +1,6 @@
 package com.glantrox.dicoding_android_fundamental.core.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -48,6 +49,8 @@ private val database: FavouriteDatabase
                    setListOfFavouriteState(ServiceState.Empty)
                }
            } catch (e: Exception) {
+               Log.d("favouriteDebug", "${e.message}")
+               setCurrentMessage(e.message.toString())
                setListOfFavouriteState(ServiceState.Error)
            }
        }
@@ -77,6 +80,10 @@ private val database: FavouriteDatabase
 
     private fun setListOfFavouriteState(value: ServiceState) {
         _listOfFavouriteState.value = value
+    }
+
+    private fun setCurrentMessage(value: String) {
+        _currentMessage.value = value
     }
 
 }
