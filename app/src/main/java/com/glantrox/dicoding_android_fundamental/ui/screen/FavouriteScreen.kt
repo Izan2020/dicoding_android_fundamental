@@ -45,7 +45,7 @@ fun FavouriteScreen(
     val context = LocalContext.current
 
     val listOfFavouritesState by favouriteViewModel.listOfFavouriteState
-    val listOfFavourites by favouriteViewModel.listOfFavourites
+    val listOfFavourites = favouriteViewModel.listOfFavourites.toList()
 
     LaunchedEffect(true) {
         favouriteViewModel.getListOfFavourites()
@@ -89,7 +89,7 @@ fun FavouriteScreen(
                 ServiceState.Loading -> WarningMessage(WarningMessages.LOADING)
                 ServiceState.Error -> WarningMessage(WarningMessages.ERROR, errorCode = favouriteViewModel.currentMessage.value)
                 ServiceState.Success -> LazyColumn {
-                    items(listOfFavourites.listOfFavourites) { user ->
+                    items(listOfFavourites) { user ->
                         ItemFavourite(
                             user = user,
                             onTap = { loginId ->

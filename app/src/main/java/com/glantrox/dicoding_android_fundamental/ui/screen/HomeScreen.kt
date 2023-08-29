@@ -94,7 +94,7 @@ fun HomeScreen(
                 onClick = {
                     AppRouter.push(navHostController, Screen.FavouriteScreen.route)
                 }) {
-                Icon(imageVector = Icons.Rounded.Star, contentDescription = "")
+                Icon(imageVector = Icons.Rounded.Star, contentDescription = "", tint = Color.White)
             }
         }
     ) {
@@ -130,9 +130,8 @@ fun HomeScreen(
                         },
                         trailingIcon = {
                             IconButton(onClick = {
-
                                 homeViewModel.setHomeEvent(HomeEvent.OnSearch)
-                                homeViewModel.getListOfUsers()
+                                homeViewModel.getListOfUsers(searchQuery)
                             }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.baseline_search_24),

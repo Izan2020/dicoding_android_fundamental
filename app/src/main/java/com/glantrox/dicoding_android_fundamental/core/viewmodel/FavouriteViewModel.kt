@@ -2,7 +2,9 @@ package com.glantrox.dicoding_android_fundamental.core.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glantrox.dicoding_android_fundamental.core.constant.ServiceState
@@ -13,18 +15,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class Favourites(
-     var listOfFavourites: List<Favourite> = emptyList()
- )
 
 @HiltViewModel
 class  FavouriteViewModel @Inject constructor(
 private val database: FavouriteDatabase
 ): ViewModel() {
-
     // List Of Favourites
-    private val _listOfFavourites = mutableStateOf(Favourites())
-    val listOfFavourites : State<Favourites> = _listOfFavourites
+    private val _listOfFavourites = mutableStateListOf<Favourite>()
+    val listOfFavourites : SnapshotStateList<Favourite>
+        get() = _listOfFavourites
 
     // List Of Favourites State
     private val _listOfFavouriteState = mutableStateOf(ServiceState.Empty)
@@ -40,10 +39,10 @@ private val database: FavouriteDatabase
        viewModelScope.launch {
            try {
                setListOfFavouriteState(ServiceState.Loading)
-               delay(2500)
+               delay(1500)
                val localSource = database.FavouriteDao().getFavourites()
                if(localSource.isNotEmpty()) {
-                   _listOfFavourites.value.listOfFavourites = localSource
+                   _listOfFavourites.addAll(localSource)
                    setListOfFavouriteState(ServiceState.Success)
                } else {
                    setListOfFavouriteState(ServiceState.Empty)
@@ -59,7 +58,11 @@ private val database: FavouriteDatabase
     fun deleteFavourite(user: Favourite) {
         viewModelScope.launch {
             database.FavouriteDao().deleteFavourite(user)
-            database.FavouriteDao().getFavourites()
+            _listOfFavourites.remove(user)
+            if(_listOfFavourites.toList().isEmpty()) {
+                setListOfFavouriteState(ServiceState.Empty)
+            }
+
         }
     }
 
@@ -72,7 +75,7 @@ private val database: FavouriteDatabase
     fun deleteAllFavourite() {
         viewModelScope.launch {
             database.FavouriteDao().deleteAllFavourites()
-            database.FavouriteDao().getFavourites()
+            _listOfFavourites.removeAll(emptyList())
             setListOfFavouriteState(ServiceState.Empty)
         }
     }
